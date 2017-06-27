@@ -1,135 +1,61 @@
-# PowerShell Language Support for Visual Studio Code
+# Android for VS Code
 
-[![Version](https://vsmarketplacebadge.apphb.com/version/ms-vscode.PowerShell.svg)](https://marketplace.visualstudio.com/items?itemName=ms-vscode.PowerShell) [![Installs](https://vsmarketplacebadge.apphb.com/installs-short/ms-vscode.PowerShell.svg)](https://marketplace.visualstudio.com/items?itemName=ms-vscode.PowerShell) [![Build status](https://ci.appveyor.com/api/projects/status/x2g1u375ih4w1xcc/branch/develop?svg=true)](https://ci.appveyor.com/project/PowerShell/vscode-powershell/branch/develop) [![Join the chat at https://gitter.im/PowerShell/vscode-powershell](https://badges.gitter.im/PowerShell/vscode-powershell.svg)](https://gitter.im/PowerShell/vscode-powershell?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-
-This extension provides rich PowerShell language support for [Visual Studio Code](https://github.com/Microsoft/vscode).
-Now you can write and debug PowerShell scripts using the excellent IDE-like interface
-that Visual Studio Code provides.
-
-## Platform support
-
-- **Windows 7 through 10** with PowerShell v3 and higher
-- **Linux** with PowerShell v6 (all PowerShell-supported distributions)
-- **macOS and OS X** with PowerShell v6
-
-Read the [installation instructions](https://github.com/PowerShell/PowerShell/blob/master/docs/learning-powershell/using-vscode.md)
-to get more details on how to use the extension on these platforms.
+This is a preview version of the Android for VS Code Extension. The extension allows developers to install, launch and debug Android Apps from within the VS Code environment.
 
 ## Features
+* Line by line code stepping
+* Breakpoints
+* Variable inspection and modification
+* Logcat viewing [ Command Palette -> Android: View Logcat ]
+* Break on exceptions
+* Step through Android sources
 
-- Syntax highlighting
-- Code snippets
-- IntelliSense for cmdlets and more
-- Rule-based analysis provided by [PowerShell Script Analyzer](http://github.com/PowerShell/PSScriptAnalyzer)
-- Go to Definition of cmdlets and variables
-- Find References of cmdlets and variables
-- Document and workspace symbol discovery
-- Run selected selection of PowerShell code using `F8`
-- Launch online help for the symbol under the cursor using `Ctrl+F1`
-- Local script debugging and basic interactive console support!
+## Requirements
 
-## Quick Installation
+You must have [Android SDK Platform Tools](https://developer.android.com/studio/releases/platform-tools.html) installed. This extension communicates with your device via the ADB (Android Debug Bridge) interface.  
+> You are not required to have Android Studio installed - if you have Android Studio installed, make sure there are no active instances of it when using this extension or you may run into problems with ADB.
 
-If you're on Windows 7 or greater with the [PowerShellGet](https://msdn.microsoft.com/powershell/gallery/readme)
-module installed, you can easily install both Visual Studio Code and the PowerShell
-extension by running the following command:
+## Limitations
 
-```powershell
-Install-Script Install-VSCode -Scope CurrentUser; Install-VSCode.ps1
-```
+* This is a preview version so expect the unexpected. Please log any issues you find on [GitHub](https://github.com/adelphes/android-dev-ext/issues).  
+* This extension **will not build your app**.  
+If you use gradle (or Android Studio), you can build your app from the command-line using `./gradlew assembleDebug`.
+> You must use gradle or some other build procedure to create your APK. Once built, the extension can deploy and launch your app, allowing you to debug it in the normal way.  
+* Some debugger options are yet to be implemented. You cannot set conditional breakpoints and watch expressions must be simple variables.
+* If you require a must-have feature that isn't there yet, let us know on [GitHub](https://github.com/adelphes/android-dev-ext/issues).  
+* This extension does not provide any additional code completion or other editing enhancements.
 
-You will need to accept the prompts that appear if this is your first time running
-the `Install-Script` command.
+## Extension Settings
 
-**Alternatively** you can download and execute the script directly from the web
-without the use of `Install-Script`.  However we **highly recommend** that you
-[read the script](https://github.com/PowerShell/vscode-powershell/blob/develop/scripts/Install-VSCode.ps1)
-first before running it in this way!
+This extension allows you to debug your App by creating a new Android configuration in `launch.json`.  
+The following settings are used to configure the debugger:
 
-```powershell
-iex (iwr https://git.io/v9rJg)
-```
+    {
+        "version": "0.2.0",
+        "configurations": [
+            {
+                // configuration type, request  and name. "launch" is used to deploy the app to your device and start a debugging session
+                "type": "android",
+                "request": "launch",
+                "name": "Launch App",
 
-## Installing the Extension
+                // Location of the App source files. This value must point to the root of your App source tree (containing AndroidManifest.xml)
+                "appSrcRoot": "${workspaceRoot}/app/src/main",
 
-You can install the official release of the PowerShell extension by following the steps
-in the [Visual Studio Code documentation](https://code.visualstudio.com/docs/editor/extension-gallery).
-In the Extensions pane, search for "PowerShell" extension and install it there.  You will
-get notified automatically about any future extension updates!
+                // Fully qualified path to the built APK (Android Application Package)
+                "apkFile": "${workspaceRoot}/app/build/outputs/apk/app-debug.apk",
 
-You can also install a VSIX package from our [Releases page](https://github.com/PowerShell/vscode-powershell/releases) by following the
-[Install from a VSIX](https://code.visualstudio.com/docs/extensions/install-extension#_install-from-a-vsix)
-instructions.  The easiest way is through the command line:
+                // Port number to connect to the local ADB (Android Debug Bridge) instance. Default: 5037
+                "adbPort": 5037,
 
-```
-code --install-extension PowerShell-<version>.vsix
-```
+                // Launch behaviour if source files have been saved after the APK was built. One of: [ ignore warn stop ]. Default: warn
+                "staleBuild": "warn",
+            }
+        ]
+    }
 
-> NOTE: If you are using VS Code Insiders, the command will be `code-insiders`.
+## Questions / Problems
 
-## Example Scripts
+If you run into any problems, tell us on [GitHub](https://github.com/adelphes/android-dev-ext/issues) or contact me on [Twitter](https://twitter.com/daveholoway).
 
-There are some example scripts in the extension's `examples` folder that you can
-use to discover PowerShell editing and debugging functionality.  Please
-check out the included [README.md](examples/README.md) file to learn more about
-how to use them.
-
-This folder can be found at the following path:
-```
-c:\Users\<yourusername>\.vscode\extensions\ms-vscode.PowerShell-<version>\examples
-```
-To open/view the extension's examples in Visual Studio Code, run the following from your PowerShell command prompt:
-```
-code (Get-ChildItem $Home\.vscode\extensions\ms-vscode.PowerShell-*\examples)[-1]
-```
-
-## Reporting Problems
-
-If you're having trouble with the PowerShell extension, please follow these instructions
-to file an issue on our GitHub repository:
-
-### 1. File an issue on our [Issues Page](https://github.com/PowerShell/vscode-powershell/issues)
-
-Make sure to fill in the information that is requested in the issue template as it
-will help us investigate the problem more quickly.
-
-### 2. Capture verbose logs and send them to us
-
-If you're having an issue with crashing or other erratic behavior, add the following
-line to your User Settings in Visual Studio Code:
-
-```json
-    "powershell.developer.editorServicesLogLevel": "Verbose"
-```
-
-Restart Visual Studio Code and try to reproduce the problem.  Once you are done with
-that, zip up the logs in the corresponding folder for your operating system:
-
-- **Windows**: `$HOME\.vscode\extensions\ms-vscode.PowerShell-<CURRENT VERSION>\logs`
-- **Linux and macOS**: `~/.vscode/extensions/ms-vscode.PowerShell-<CURRENT VERSION>/logs`
-
-You have two options for sending us the logs:
-
-  1. If you are editing scripts that contain sensitive information (intellectual property,
-     deployment or administrative information, etc), e-mail the logs directly to
-     *daviwil [at] microsoft.com*
-
-  2. If you are editing scripts that don't contain sensitive information, you can drag and
-     drop your logs ZIP file into the GitHub issue that you are creating.
-
-
-## Contributing to the Code
-
-Check out the [development documentation](docs/development.md) for more details
-on how to contribute to this extension!
-
-## Maintainers
-
-- [David Wilson](https://github.com/daviwil) - [@daviwil](http://twitter.com/daviwil)
-- [Keith Hill](https://github.com/rkeithhill) - [@r_keith_hill](http://twitter.com/r_keith_hill)
-
-## License
-
-This extension is [licensed under the MIT License](LICENSE.txt).  Please see the
-[third-party notices](Third%20Party%20Notices.txt) file for details on the third-party
-binaries that we include with releases of this project.
+![Launch Android App](https://raw.githubusercontent.com/adelphes/android-dev-ext/master/images/demo.gif)
